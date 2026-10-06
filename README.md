@@ -77,3 +77,7 @@ pnpm e2e          # Docker: the lab + Playwright as a POS and as a panel user
 ## Scope
 
 POSandbox emulates each device as your POS sees it on the wire. It is not the bank side of payments (EMV, issuer keys) and a good TCP ESC/POS emulation does not certify other models or connections. Test on real hardware before production.
+
+## License
+
+[GPL-3.0](LICENSE) © AbianS

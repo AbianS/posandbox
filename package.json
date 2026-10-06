@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "description": "Visual lab of virtual POS devices. First device: Epson TM-T20III ESC/POS network printer.",
   "private": true,
+  "license": "GPL-3.0-or-later",
+  "author": "AbianS",
   "type": "module",
   "engines": {
     "node": ">=24"
