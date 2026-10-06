@@ -6,6 +6,10 @@
 
 Docker or Node 24 · ESC/POS · Adyen Terminal API · [run it](#run-it)
 
+[![CI](https://github.com/AbianS/posandbox/actions/workflows/ci.yml/badge.svg)](https://github.com/AbianS/posandbox/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/AbianS/posandbox)](https://github.com/AbianS/posandbox/releases)
+[![Docker Hub](https://img.shields.io/docker/pulls/abians7/posandbox)](https://hub.docker.com/r/abians7/posandbox)
+
 </div>
 
 ## Why
@@ -36,8 +40,33 @@ POSandbox puts those devices on a 3D workbench in your browser. Your app connect
 ## Run it
 
 ```sh
-docker compose up --build
+docker run -d --name posandbox \
+  -p 127.0.0.1:8100:8100 -p 127.0.0.1:9100:9100 -p 127.0.0.1:8443:8443 \
+  --add-host host.docker.internal:host-gateway \
+  -v posandbox-data:/data \
+  abians7/posandbox
 ```
+
+Or with Compose:
+
+```yaml
+services:
+  posandbox:
+    image: abians7/posandbox:latest   # or pin a version, e.g. abians7/posandbox:0.2
+    ports:
+      - "127.0.0.1:8100:8100"   # panel and control API
+      - "127.0.0.1:9100:9100"   # printer (raw TCP ESC/POS)
+      - "127.0.0.1:8443:8443"   # payment terminal (Terminal API, HTTPS)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - posandbox-data:/data
+    restart: unless-stopped
+volumes:
+  posandbox-data:
+```
+
+Images are published for `linux/amd64` and `linux/arm64`, tagged `latest`, `X.Y` and `X.Y.Z`. To build from source instead: `docker compose up --build` in this repo.
 
 Open <http://localhost:8100> and point your POS at the printer (`127.0.0.1:9100`) and the terminal (`https://127.0.0.1:8443/nexo`, POIID `V400m-324688179`). No POS yet? Send it a ticket:
 
@@ -55,7 +84,7 @@ pnpm cli terminal pay 12,50
 pnpm cli lab fault paperOut on
 ```
 
-With Docker the CLI is already in the image: `docker compose exec posandbox posandbox printer status`.
+With Docker the CLI is already in the image: `docker exec posandbox posandbox printer status`.
 
 ## Connect your POS
 
@@ -73,6 +102,12 @@ pnpm test         # unit and integration (node:test)
 pnpm typecheck
 pnpm e2e          # Docker: the lab + Playwright as a POS and as a panel user
 ```
+
+Every pull request runs typecheck, tests, build and the e2e suite. PR titles follow [Conventional Commits](https://www.conventionalcommits.org) (`feat: …`, `fix: …`, `feat!: …` for breaking changes), because they become the squashed commit on `main`.
+
+### Releases
+
+Versioning is [SemVer](https://semver.org), driven by [release-please](https://github.com/googleapis/release-please). Each merge to `main` updates a release PR with the next version and the `CHANGELOG.md`: `fix` bumps the patch, `feat` the minor (and while on `0.x`, breaking changes too). Merging that PR tags `vX.Y.Z`, creates the GitHub release and pushes the image to [Docker Hub](https://hub.docker.com/r/abians7/posandbox).
 
 ## Scope
 
