@@ -1,0 +1,17 @@
+# Local lab. Ports are published on loopback only: the panel and the control API must not reach the LAN.
+services:
+  posandbox:
+    build: .
+    image: posandbox:local
+    ports:
+      - "127.0.0.1:${POSANDBOX_HTTP_PORT:-8100}:8100"
+      - "127.0.0.1:${POSANDBOX_PRINTER_PORT:-9100}:9100"
+      - "127.0.0.1:${POSANDBOX_TERMINAL_PORT:-8443}:8443"
+    # the scanner types into the POS on this machine (Docker Desktop has this name; Linux needs the mapping)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - posandbox-data:/data
+    restart: unless-stopped
+volumes:
+  posandbox-data:

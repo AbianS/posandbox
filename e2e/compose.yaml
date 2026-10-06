@@ -1,0 +1,28 @@
+# End-to-end suite: the lab container plus a Playwright container acting as POS and as panel user.
+name: posandbox-e2e
+services:
+  posandbox:
+    build: ..
+    environment:
+      POSANDBOX_ALLOWED_HOSTS: posandbox
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8100/api/health"]
+      interval: 2s
+      retries: 30
+  e2e:
+    build:
+      context: ..
+      dockerfile: e2e/Dockerfile
+    environment:
+      BASE_URL: http://posandbox:8100
+      PRINTER_HOST: posandbox
+      PRINTER_PORT: "9100"
+      VISUAL: ${VISUAL:-}
+      PERF: ${PERF:-}
+      PERF_LABEL: ${PERF_LABEL:-}
+      PERF_FLAGS: ${PERF_FLAGS:-}
+    volumes:
+      - ./artifacts:/app/e2e/artifacts
+    depends_on:
+      posandbox:
+        condition: service_healthy

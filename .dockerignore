@@ -1,0 +1,9 @@
+node_modules
+dist
+data
+.git
+e2e/artifacts
+test-results
+playwright-report
+*.md
+!fixtures
