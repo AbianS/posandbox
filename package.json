@@ -1,7 +1,7 @@
 {
   "name": "posandbox",
   "version": "0.1.0",
-  "description": "Visual lab of virtual POS devices. First device: Epson TM-T20III ESC/POS network printer.",
+  "description": "Virtual POS devices on a 3D workbench: ESC/POS printer, Adyen payment terminal, cash drawer and barcode scanner over their real wire protocols",
   "private": true,
   "license": "GPL-3.0-or-later",
   "author": "AbianS",
