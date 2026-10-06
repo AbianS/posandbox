@@ -146,6 +146,8 @@ export class Terminal {
   #reversing: Header | null = null;
   readonly #persistence: TerminalPersistence | null;
   #deviceSeq = 0;
+  /** Display notifications go out one after another, so the POS sees them in the order of the payment. */
+  #notifications: Promise<void> = Promise.resolve();
 
   #inspector: InspectorEntry[] = [];
   #inspectorSeq = 0;
@@ -592,7 +594,8 @@ export class Terminal {
       }
       this.#flush();
     };
-    void send(1);
+    // ponytail: retries leave the queue (a dead URL must not hold back later events), so only they can arrive late
+    this.#notifications = this.#notifications.then(() => send(1));
   }
 
   /** Power cut or listener closed: a payment not yet authorised is lost, as on a terminal that reboots. */
