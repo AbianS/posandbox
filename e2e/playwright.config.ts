@@ -3,7 +3,9 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: '.',
   outputDir: './artifacts/results',
-  timeout: 60_000,
+  // the 3D scene renders on the CPU (SwiftShader): slow on shared CI runners
+  timeout: 120_000,
+  expect: { timeout: 15_000 },
   workers: 1, // one virtual printer, one POS session: tests share it
   reporter: [['list']],
   use: {
