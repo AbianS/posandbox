@@ -40,12 +40,12 @@ POSandbox puts those devices on a 3D workbench in your browser. Your app connect
 ## Run it
 
 ```sh
-docker run -d --name posandbox \
+docker run -d --name posandbox -v posandbox-data:/data \
   -p 127.0.0.1:8100:8100 -p 127.0.0.1:9100:9100 -p 127.0.0.1:8443:8443 \
-  --add-host host.docker.internal:host-gateway \
-  -v posandbox-data:/data \
   abians7/posandbox
 ```
+
+Docker only publishes the ports you list; binding them to `127.0.0.1` keeps the panel off your LAN. On Linux, add `--add-host host.docker.internal:host-gateway` so the scanner can reach your POS (Docker Desktop already has it).
 
 Or with Compose:
 

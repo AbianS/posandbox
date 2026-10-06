@@ -53,7 +53,8 @@ interface Issued {
 function issue(subject: string, publicKey: KeyObject, signer: KeyObject, issuer: { cn: string; publicKey: KeyObject } | null, years: number, leaf: { dns: string[]; ips: string[] } | null): string {
   const now = Date.now();
   const serial = randomBytes(16);
-  serial[0] &= 0x7f;
+  // positive and minimal DER: a leading 0x00 byte is "illegal padding" to OpenSSL
+  serial[0] = (serial[0] & 0x7f) | 0x40;
   const caKeyId = keyId(issuer?.publicKey ?? publicKey);
   const extensions = leaf
     ? [
